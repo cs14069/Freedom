@@ -68,7 +68,7 @@ public class OrderManager {
 		for (int i = 0; i < param.length; i++) {
 			param[i] = new Parameter();
 		}
-		param[0].setMarketParam(productCode, side, size);
+		param[0].setMarketParam(productCode, side, getProperSize(size));
 		Order order = new Order(Constant.SIMPLE, Constant.MINUTE_TO_EXPIRE, Constant.GTC, param);
 		json = JSON.encode(order);
 		System.out.println("[Order Json]: " + json);
@@ -157,7 +157,6 @@ public class OrderManager {
 	}
 
 	void revoke(List<Map> orderList, String oldSide, String newSide) {
-		// ???
 		Iterator<Map> it, it2;
 		Map tmp;
 		for (it = parentOrderList.iterator(); it.hasNext();) {

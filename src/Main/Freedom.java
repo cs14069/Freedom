@@ -165,11 +165,17 @@ public class Freedom extends Thread {
 			return true;
 		}
 		double pos = Math.abs(restPosition);
-		double size = pos/3;
+		double size = pos/2;
 		if(size < Constant.ORDER_SIZE) {
-			size = Constant.ORDER_SIZE;
+			size = pos;
 		}
-		if (asm.getOpenPositionPnl() / pos > anm.getAverageHeight() * Constant.ORDER_PRICE_PROFIT_MUL) {
+		if (pos > Constant.MAX_POSITION) {
+			if (restPosition < 0) {
+				om.order(Constant.BUY, Constant.ORDER_SIZE, productCode);
+			} else {
+				om.order(Constant.SELL, Constant.ORDER_SIZE, productCode);
+			}			
+		} else if (asm.getOpenPositionPnl() / pos > anm.getAverageHeight() * Constant.ORDER_PRICE_PROFIT_MUL) {
 			System.out.println("enough profit");
 			om.cancelAllOrder(Constant.FX_BTC_JPY);
 			if (restPosition < 0) {
@@ -177,8 +183,7 @@ public class Freedom extends Thread {
 			} else {
 				om.order(Constant.SELL, pos, productCode);
 			}			
-		}
-		if (asm.getOpenPositionPnl() / pos < -anm.getAverageHeight() * Constant.ORDER_PRICE_GIVEUP_MUL) {
+		} else if (asm.getOpenPositionPnl() / pos < -anm.getAverageHeight() * Constant.ORDER_PRICE_GIVEUP_MUL) {
 			if (restPosition < 0) {
 				om.revoke(orderList, Constant.SELLBUY, Constant.BUY);
 				om.order(Constant.BUY, size, productCode);
